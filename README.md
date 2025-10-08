@@ -82,10 +82,31 @@ docker exec -it influxdb influx v1 auth create \
   --username k6-agil-gob \
   --password k6-agil-gob \
   --org agil \
-  --read-bucket 4f9e97cd9b670779 \
-  --write-bucket 4f9e97cd9b670779
+  --read-bucket 8249f30987241c87 \
+  --write-bucket 8249f30987241c87
 
 
-ID			Description	Username	v2 User Name	v2 User ID		Permissions
-0f9466b26f658000			k6-agil-gob	admin		0f94660aa4b6e000	[read:orgs/0acf0b47124dc2cf/buckets/4f9e97cd9b670779 write:orgs/0acf0b47124dc2cf/buckets/4f9e97cd9b670779]
 
+## Ejecutar las pruebas de k6 en local 
+```shell
+
+export K6_INFLUXDB_USERNAME=k6-agil-gob
+export K6_INFLUXDB_PASSWORD=k6-agil-gob
+export K6_INFLUXDB_ADDR=http://influxdb:8086
+export K6_INFLUXDB_DATABASE=k6 
+
+export ENVIRONMENT=sandbox
+export STRATEGY=average
+
+export K6_WEB_DASHBOARD=true
+export K6_WEB_DASHBOARD_EXPORT="Report_${ENVIRONMENT}_${STRATEGY}.html"
+
+k6 run \
+  --out influxdb=http://localhost:8086/k6 \
+  --tag environment=$ENVIRONMENT \
+  --tag strategy=$STRATEGY \
+  k6/functionary/tests/front-functionary.js
+
+
+
+```

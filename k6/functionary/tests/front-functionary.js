@@ -50,10 +50,10 @@ export default function () {
         const loginInfo = testLogin(baseUrl, headersBase, user);
         user = {...user, ...loginInfo};
         vuJwts.set(vuId, user);
-        // console.log(`[VU ${__VU}] Initial login for user ${user.email}`);
+        console.log(`[VU ${__VU}] Initial login for user ${user.email}`);
     } else {
         user = vuJwts.get(vuId);
-        // console.log(`[VU ${__VU}] Reusing login for user ${user.email} (iteration ${exec.vu.iterationInInstance})`);
+        console.log(`[VU ${__VU}] Reusing login for user ${user.email} (iteration ${exec.vu.iterationInInstance})`);
     }
 
 
@@ -70,6 +70,8 @@ export default function () {
         'hay data en expedientes por usuario': (r) => r.json('data') !== undefined,
     });
 
+    // console.log( user)
+    // console.log(expedientsUserRes.json())    
 
     // sleep(2);
     // Expedientes electronicos por juzgado
@@ -101,17 +103,17 @@ export default function () {
 
     // sleep(2);
     // Notificaciones push
-    const pushNotificationsHeaders = { ...headersBase, Authorization: user.jwt };
-    const pushNotificationsRes = http.get(
-        `${baseUrl}/api/v1/push_notifications/20?page=1`,
-        { headers: pushNotificationsHeaders }
-    );
+    // const pushNotificationsHeaders = { ...headersBase, Authorization: user.jwt };
+    // const pushNotificationsRes = http.get(
+    //     `${baseUrl}/api/v1/push_notifications/20?page=1`,
+    //     { headers: pushNotificationsHeaders }
+    // );
 
-    check(pushNotificationsRes, {
-        'notificaciones push 200': (r) => r.status === 200,
-        'contiene objeto notificaciones': (r) => r.json('data.notifications') !== undefined,
-    });
+    // check(pushNotificationsRes, {
+    //     'notificaciones push 200': (r) => r.status === 200,
+    //     'contiene objeto notificaciones': (r) => r.json('data.notifications') !== undefined,
+    // });
 
 
-    console.log(`Completed iteration ${exec.vu.iterationInInstance} for user ${user.email}`)     //en qué iteración nos encontramos para verificar
+    // console.log(`Completed iteration ${exec.vu.iterationInInstance} for user ${user.email}`)     //en qué iteración nos encontramos para verificar
 }

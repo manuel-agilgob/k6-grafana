@@ -15,15 +15,15 @@ services:
             - influxdb2-data:/var/lib/influxdb2
             - influxdb2-config:/etc/influxdb2
 
-    k6:
-        image: grafana/k6:latest
-        container_name: k6
-        depends_on:
-            - influxdb
-        volumes:
-            - ./k6/functionary/tests:/scripts
-        entrypoint: >
-            sh -c "k6 run --out influxdb=http://k6user:k6pass@influxdb:8086/k6 /scripts/front-functionary.js"
+    # k6:
+    #     image: grafana/k6:latest
+    #     container_name: k6
+    #     depends_on:
+    #         - influxdb
+    #     volumes:
+    #         - ./k6/functionary/tests:/scripts
+    #     entrypoint: >
+    #         sh -c "k6 run --out influxdb=http://k6user:k6pass@influxdb:8086/k6 /scripts/front-functionary.js"
 
     grafana:
         image: grafana/grafana:10.4.2

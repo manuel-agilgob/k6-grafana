@@ -19,7 +19,7 @@ export const loadOptions = (strategy = "smoke", environment = "sandbox", applica
     const opts = JSON.parse(JSON.stringify(rawStrategy));
     const env = opts[environment]
     console.log(`Running ${strategy} test on ${environment} for ${application}`);
-    console.log(rawStrategy);
+
     return env[application];
 };
 
