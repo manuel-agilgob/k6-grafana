@@ -1,6 +1,6 @@
 FROM grafana/k6:latest
 
 # Copia todos los archivos y carpetas al contenedor
-COPY ./k6 /app
+COPY . ./app
 
 WORKDIR /app

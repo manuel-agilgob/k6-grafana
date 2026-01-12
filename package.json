@@ -1,5 +1,35 @@
 {
-  "dependencies": {
-    "node-fetch": "^2.7.0"
+  "name": "k6-performance-testing",
+  "version": "2.0.0",
+  "description": "Professional K6 performance testing suite with Grafana integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "k6 run tests/functionary/front-functionary.test.js",
+    "test:smoke": "STRATEGY=smoke npm run test",
+    "test:load": "STRATEGY=load npm run test",
+    "test:stress": "STRATEGY=stress npm run test",
+    "test:spike": "STRATEGY=spike npm run test",
+    "test:soak": "STRATEGY=soak npm run test",
+    "test:dashboard": "K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=./reports/report-$(date +%Y%m%d-%H%M%S).html npm run test",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup:influxdb": "bash scripts/setup-influxdb.sh",
+    "setup:grafana": "bash scripts/setup-grafana.sh",
+    "clean": "rm -rf reports/*.html tmp/*"
+  },
+  "keywords": [
+    "k6",
+    "performance-testing",
+    "load-testing",
+    "grafana",
+    "influxdb"
+  ],
+  "author": "Your Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

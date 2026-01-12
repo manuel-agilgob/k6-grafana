@@ -1,41 +1,118 @@
+# ============================================
+# K6 Performance Testing Stack
+# ============================================
+# 
+# This docker-compose file sets up a complete performance testing
+# environment with InfluxDB for metrics storage and Grafana for
+# visualization.
+#
+# Usage:
+#   docker-compose up -d                    # Start services
+#   docker-compose down                     # Stop services
+#   docker-compose logs -f                  # View logs
+#
+# Access:
+#   - Grafana: http://localhost:3300 (admin/admin123)
+#   - InfluxDB: http://localhost:8086 (admin/admin123)
+#
+
+version: '3.8'
+
 services:
-    influxdb:
-        image: influxdb:2
-        container_name: influxdb
-        ports:
-            - "8086:8086"                     # UI en http://localhost:8086
-        environment:
-            DOCKER_INFLUXDB_INIT_MODE: setup
-            DOCKER_INFLUXDB_INIT_USERNAME: admin
-            DOCKER_INFLUXDB_INIT_PASSWORD: admin123
-            DOCKER_INFLUXDB_INIT_ORG: agil
-            DOCKER_INFLUXDB_INIT_BUCKET: k6          # bucket donde k6 escribirá
-            DOCKER_INFLUXDB_INIT_RETENTION: 0        # sin caducidad
-        volumes:
-            - influxdb2-data:/var/lib/influxdb2
-            - influxdb2-config:/etc/influxdb2
+  # InfluxDB - Time series database for K6 metrics
+  influxdb:
+    image: influxdb:2.7
+    container_name: k6-influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      # Initial setup
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: admin123
+      DOCKER_INFLUXDB_INIT_ORG: agil
+      DOCKER_INFLUXDB_INIT_BUCKET: k6
+      DOCKER_INFLUXDB_INIT_RETENTION: 30d
+      # Admin token (change in production)
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: k6-admin-token-change-me
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    networks:
+      - k6-network
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-    # k6:
-    #     image: grafana/k6:latest
-    #     container_name: k6
-    #     depends_on:
-    #         - influxdb
-    #     volumes:
-    #         - ./k6/functionary/tests:/scripts
-    #     entrypoint: >
-    #         sh -c "k6 run --out influxdb=http://k6user:k6pass@influxdb:8086/k6 /scripts/front-functionary.js"
+  # Grafana - Metrics visualization dashboard
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: k6-grafana
+    restart: unless-stopped
+    ports:
+      - "3300:3000"
+    environment:
+      # Admin credentials
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      # Disable registration
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      # Grafana configuration
+      GF_INSTALL_PLUGINS: grafana-k6-app
+      GF_SERVER_ROOT_URL: http://localhost:3300
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    networks:
+      - k6-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-    grafana:
-        image: grafana/grafana:10.4.2
-        container_name: grafana
-        ports:
-            - "3300:3000"
-        depends_on:
-            - influxdb
-        volumes:
-            - grafana-data:/var/lib/grafana
+  # K6 Test Runner (optional - for running tests in container)
+  # Uncomment to run tests inside Docker
+  # k6:
+  #   image: grafana/k6:latest
+  #   container_name: k6-runner
+  #   networks:
+  #     - k6-network
+  #   environment:
+  #     K6_INFLUXDB_ORGANIZATION: agil
+  #     K6_INFLUXDB_BUCKET: k6
+  #     K6_INFLUXDB_TOKEN: k6-admin-token-change-me
+  #     K6_INFLUXDB_INSECURE: "true"
+  #     K6_OUT: "influxdb=http://influxdb:8086"
+  #   volumes:
+  #     - ./tests:/tests
+  #     - ./config:/config
+  #     - ./services:/services
+  #     - ./utils:/utils
+  #     - ./data:/data
+  #     - ./reports:/reports
+  #   command: run /tests/functionary/front-functionary.test.js
+  #   depends_on:
+  #     influxdb:
+  #       condition: service_healthy
 
 volumes:
-    influxdb2-data:
-    influxdb2-config:
-    grafana-data:
+  influxdb-data:
+    name: k6-influxdb-data
+  influxdb-config:
+    name: k6-influxdb-config
+  grafana-data:
+    name: k6-grafana-data
+
+networks:
+  k6-network:
+    name: k6-performance-network
+    driver: bridge
+
