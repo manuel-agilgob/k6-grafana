@@ -4,19 +4,8 @@
   "description": "Professional K6 performance testing suite with Grafana integration",
   "main": "index.js",
   "scripts": {
-    "test": "k6 run tests/functionary/front-functionary.test.js",
-    "test:smoke": "STRATEGY=smoke npm run test",
-    "test:load": "STRATEGY=load npm run test",
-    "test:stress": "STRATEGY=stress npm run test",
-    "test:spike": "STRATEGY=spike npm run test",
-    "test:soak": "STRATEGY=soak npm run test",
-    "test:dashboard": "K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=./reports/report-$(date +%Y%m%d-%H%M%S).html npm run test",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    "setup:influxdb": "bash scripts/setup-influxdb.sh",
-    "setup:grafana": "bash scripts/setup-grafana.sh",
-    "clean": "rm -rf reports/*.html tmp/*"
+    "pre-commit": "npx dotenvx encrypt -f .env.pre && npx dotenvx encrypt -f .env.pos && echo 'Pre-commit: .env files encrypted'"
+    
   },
   "keywords": [
     "k6",
