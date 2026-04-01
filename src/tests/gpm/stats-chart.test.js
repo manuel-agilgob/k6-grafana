@@ -8,8 +8,8 @@ const BASE_URL = __ENV.GPM_BASE_URL;
 const CHART_ID = __ENV.GPM_CHART_ID || "1";
 
 export const options = {
-  vus: 1,
-  iterations: 100,
+  vus: 50,
+  iterations: 1000,
 };
 
 /**
