@@ -26,9 +26,9 @@ export function setup() {
   );
 
   // Verificar que el login realmente autenticó (no redirigió de vuelta al login)
-//   console.log(`[setup] login final URL: ${res.url}`);
-//   console.log(`[setup] login status: ${res.status}`);
-//   console.log(`[setup] login body (primeros 300): ${res.body ? res.body.substring(0, 300) : '(vacío)'}`);
+  //   console.log(`[setup] login final URL: ${res.url}`);
+  //   console.log(`[setup] login status: ${res.status}`);
+  //   console.log(`[setup] login body (primeros 300): ${res.body ? res.body.substring(0, 300) : '(vacío)'}`);
 
   if (res.status !== 200) {
     throw new Error(`Login fallido: ${res.status}`);
@@ -60,8 +60,6 @@ export default function ({ cookies }) {
         "status es 200": (r) => r.status === 200,
         "body no está vacío": (r) => r.body && r.body.length > 0,
     });
-
-//   console.log(`[stats/chart/${CHART_ID}] status: ${res.status} | body size: ${res.body?.length ?? 0} bytes`);
 
     // sleep(1);
 }
