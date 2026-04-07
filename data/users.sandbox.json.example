@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "email": "user1@example.com",
+      "password": "password123",
+      "app_id": 3,
+      "role": "functionary"
+    },
+    {
+      "email": "user2@example.com",
+      "password": "password123",
+      "app_id": 3,
+      "role": "functionary"
+    },
+    {
+      "email": "user3@example.com",
+      "password": "password123",
+      "app_id": 3,
+      "role": "functionary"
+    },
+    {
+      "email": "user4@example.com",
+      "password": "password123",
+      "app_id": 3,
+      "role": "functionary"
+    },
+    {
+      "email": "user5@example.com",
+      "password": "password123",
+      "app_id": 3,
+      "role": "functionary"
+    }
+  ],
+  "functionary": {
+    "apiBaseUrl": "https://api-sandbox.example.com",
+    "authorization": "Bearer your-sandbox-token-here",
+    "timeout": 10000
+  },
+  "citizen": {
+    "apiBaseUrl": "https://api-sandbox.example.com",
+    "authorization": "Bearer your-sandbox-token-here",
+    "timeout": 10000
+  }
+}

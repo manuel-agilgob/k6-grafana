@@ -4,7 +4,7 @@
   "description": "Professional K6 performance testing suite with Grafana integration",
   "main": "index.js",
   "scripts": {
-    "pre-commit": "npx dotenvx encrypt -f .env.pre && npx dotenvx encrypt -f .env.pos && echo 'Pre-commit: .env files encrypted'",
+    "pre-commit": "npx dotenvx encrypt -f .env.pre && npx dotenvx encrypt -f .env.pos && npx dotenvx encrypt -f .env.local && echo 'Pre-commit: .env files encrypted'",
     "pre" : "npx dotenvx run -f .env.pre -- ",
     "pos" : "npx dotenvx run -f .env.pos -- "
   },
