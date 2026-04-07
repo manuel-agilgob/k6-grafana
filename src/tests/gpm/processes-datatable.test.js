@@ -2,20 +2,16 @@ import http from "k6/http";
 import { check } from "k6";
 import { getCSRF } from "../../services/gpm-get-csrf.js";
 import { login } from "../../services/gpm-login.js";
-import { postChartStage } from "../../services/gpm-chart-stage.service.js";
+import { getProcessesDatatable } from "../../services/gpm-processes-datatable.service.js";
 import { strategy as strategyConfig } from "./options.js";
 
 const BASE_URL = __ENV.GPM_BASE_URL;
-const TIME = __ENV.GPM_TIME || "";
-const PROCESS_ID = __ENV.GPM_PROCESS_ID || "";
+const DT_START = parseInt(__ENV.GPM_DT_START || "0");
+const DT_LENGTH = parseInt(__ENV.GPM_DT_LENGTH || "10");
+const DT_SEARCH = __ENV.GPM_DT_SEARCH || "";
 
-export const options = {...strategyConfig};
+export const options = { ...strategyConfig };
 
-/**
- * setup() corre una sola vez antes del test.
- * Hace login, extrae cookies de sesión y obtiene el CSRF token de la página
- * de stats para usarlo en el body del POST a chartStage.
- */
 export function setup() {
   const token = getCSRF();
   const res = login(__ENV.GPM_USERNAME, __ENV.GPM_PASSWORD, token, BASE_URL);
@@ -27,11 +23,10 @@ export function setup() {
     throw new Error("Login redirigió de vuelta a /login — credenciales incorrectas");
   }
 
-  // Obtener el CSRF de sesión desde la página de stats (necesario en el POST body)
-  const statsPage = http.get(`${BASE_URL}/stats`);
-  const match = statsPage.body.match(/<meta[^>]+name="csrf-token"[^>]+content="([^"]+)"|<input[^>]+name="_token"[^>]+value="([^"]+)"/);
+  const page = http.get(`${BASE_URL}/processes`);
+  const match = page.body.match(/<meta[^>]+name="csrf-token"[^>]+content="([^"]+)"|<input[^>]+name="_token"[^>]+value="([^"]+)"/);
   if (!match) {
-    throw new Error("No se encontró el _token CSRF en la página de stats");
+    throw new Error("No se encontró el _token CSRF en la página de processes");
   }
   const csrfToken = match[1] || match[2];
 
@@ -46,7 +41,7 @@ export default function ({ cookies, csrfToken }) {
     jar.set(BASE_URL, name, values[0]);
   }
 
-  const res = postChartStage(BASE_URL, TIME, PROCESS_ID, csrfToken);
+  const res = getProcessesDatatable(BASE_URL, csrfToken, DT_START, DT_LENGTH, DT_SEARCH);
 
   check(res, {
     "status es 200": (r) => r.status === 200,

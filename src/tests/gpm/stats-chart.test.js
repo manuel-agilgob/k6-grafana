@@ -3,14 +3,12 @@ import { check, sleep } from "k6";
 import { getCSRF } from "../../services/gpm-get-csrf.js";
 import { login } from "../../services/gpm-login.js";
 import { getStatsChart } from "../../services/gpm-stats.service.js";
+import { strategy as strategyConfig } from "./options.js";
 
 const BASE_URL = __ENV.GPM_BASE_URL;
 const CHART_ID = __ENV.GPM_CHART_ID || "1";
 
-export const options = {
-  vus: 50,
-  iterations: 1000,
-};
+export const options = {...strategyConfig};
 
 /**
  * setup() corre una sola vez antes del test.

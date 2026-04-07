@@ -3,14 +3,12 @@ import { check } from "k6";
 import { getCSRF } from "../../services/gpm-get-csrf.js";
 import { login } from "../../services/gpm-login.js";
 import { getProceduresStatus } from "../../services/gpm-procedures-status.service.js";
+import { strategy as strategyConfig } from "./options.js";
 
 const BASE_URL = __ENV.GPM_BASE_URL;
 const TIME = __ENV.GPM_TIME || "";
 
-export const options = {
-  vus: 1,
-  iterations: 100,
-};
+export const options = {...strategyConfig};
 
 export function setup() {
   const token = getCSRF();
