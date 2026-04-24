@@ -14,52 +14,6 @@ import {
 } from '../config/metrics.js';
 import { enhancedCheck, formatErrorMessage, validateResponse } from '../utils/helpers.js';
 
-/**
- * Get expedients by user
- * 
- * @param {string} baseUrl - API base URL
- * @param {Object} headers - HTTP headers with auth
- * @param {string} userId - User ID
- * @param {number} page - Page number
- * @param {number} limit - Items per page
- * @returns {Object} Response data
- */
-export function getExpedientsByUser(baseUrl, headers, userId, page = 1, limit = 10) {
-  const startTime = Date.now();
-  const url = `${baseUrl}/api/v1/electronic_expedients/find/user/${userId}/1/${limit}?page=${page}`;
-  
-  const response = http.get(url, {
-    headers,
-    tags: { name: 'get_expedients_by_user', endpoint: 'expedients_user' },
-  });
-
-  const duration = Date.now() - startTime;
-  trackApiCall('expedients_by_user', duration, response);
-
-  const checks = {
-    'expedients by user: status 200': (r) => r.status === 200,
-    'expedients by user: has data': (r) => validateResponse(r, ['data']),
-    'expedients by user: response time < 2s': (r) => r.timings.duration < 2000,
-  };
-
-  enhancedCheck(response, checks, (r) => {
-    console.error(`❌ Get expedients by user failed for user ${userId}`);
-    console.error(formatErrorMessage(r));
-  });
-
-  // Track metrics
-  if (response.status === 200) {
-    try {
-      const data = response.json('data');
-      const count = data?.expedients?.length || 0;
-      trackExpedients(duration, count);
-    } catch (error) {
-      console.error('Error parsing expedients response:', error);
-    }
-  }
-
-  return response;
-}
 
 /**
  * Get expedients by court

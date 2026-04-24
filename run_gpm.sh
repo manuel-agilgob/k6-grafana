@@ -13,9 +13,9 @@ files=(
     "holidays-datatable"
     "processes-datatable"
 )
+    # ".env.pre" agregarlo a la lista de envs para ejecutar las pruebas con ese entorno
 envs=(
-    ".env.pre"
-    ".env.pos"
+    ".env.tuned"
 )
 
 for env in "${envs[@]}"; do
