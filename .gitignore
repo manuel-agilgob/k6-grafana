@@ -2,3 +2,5 @@
 dist
 .env.keys
 node_modules/
+
+*.pfx
