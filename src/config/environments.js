@@ -15,6 +15,7 @@ export const environments = {
     authorization: __ENV.API_AUTHORIZATION_SANDBOX || 'Bearer default-sandbox-token',
     timeoutMs: 10000,
     description: 'Sandbox environment for testing',
+    functionaryDigitalSignatureUrl: __ENV.FUNCTIONARY_DIGITAL_SIGNATURE_URL || '',
   },
   
   production: {
@@ -23,6 +24,7 @@ export const environments = {
     authorization: __ENV.API_AUTHORIZATION_PRODUCTION || 'Bearer default-prod-token',
     timeoutMs: 5000,
     description: 'Production environment',
+    functionaryDigitalSignatureUrl: __ENV.FUNCTIONARY_DIGITAL_SIGNATURE_URL || '',
   },
   
   local: {
@@ -31,6 +33,7 @@ export const environments = {
     authorization: __ENV.API_AUTHORIZATION_LOCAL || 'Bearer local-token',
     timeoutMs: 15000,
     description: 'Local development environment',
+    functionaryDigitalSignatureUrl: __ENV.FUNCTIONARY_DIGITAL_SIGNATURE_URL || '',
   },
 };
 

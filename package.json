@@ -5,10 +5,9 @@
   "main": "index.js",
   "scripts": {
     "pre-commit": "npx dotenvx encrypt -f .env.pre && npx dotenvx encrypt -f .env.pos && npx dotenvx encrypt -f .env.local && echo 'Pre-commit: .env files encrypted'",
-    "pre" : "npx dotenvx run -f .env.pre -- ",
-    "pos" : "npx dotenvx run -f .env.pos -- "
+    "pre": "npx dotenvx run -f .env.pre -- ",
+    "pos": "npx dotenvx run -f .env.pos -- "
   },
-
   "keywords": [
     "k6",
     "performance-testing",
@@ -20,7 +19,9 @@
   "license": "MIT",
   "dependencies": {
     "@dotenvx/dotenvx": "^1.59.1",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "jsrsasign": "^4.8.2",
+    "node-forge": "^1.3.1"
   },
   "engines": {
     "node": ">=16.0.0"
