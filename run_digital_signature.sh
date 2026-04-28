@@ -14,5 +14,6 @@ npx dotenvx run -f .env.prod -- k6 run \
     --env K6_WEB_DASHBOARD=true \
     --env K6_WEB_DASHBOARD_EXPORT=".tmp/DigitalSignature_$(date +%b%d_%H%M).html" \
     --out json=".tmp/DigitalSignature_$(date +%b%d_%H%M).json" \
-    "src/tests/functionary/digital-signature.test.js" \
-    --vus 5
+    -u 5 \
+    "src/tests/functionary/digital-signature.test.js"
+

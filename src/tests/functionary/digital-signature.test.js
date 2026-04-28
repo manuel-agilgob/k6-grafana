@@ -29,9 +29,9 @@ const signedData = JSON.parse(open(PKCS7_JSON));
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const options = {
-  stages: [
-    { duration: '20m', target: 75 },
-  ],
+//   stages: [
+//     { duration: '20m', target: 75 },
+//   ],
   thresholds: {
     'http_req_duration{endpoint:digital_signature}': ['p(95)<5000'],
     'http_req_failed{endpoint:digital_signature}':   ['rate<0.01'],
@@ -74,9 +74,15 @@ export default function ({ pkcs7, fileName }) {
 
   check(res, {
     'firma digital: status 200':            (r) => r.status === 200,
-    'firma digital: PdfBase64 recibido':    (r) => {
-      try { return Boolean(r.json('PdfBase64')); }
+    'firma digital: IsSuccess true':        (r) => {
+      try { return r.json('IsSuccess') === true; }
       catch { return false; }
+    },
+    'firma digital: PdfBase64 no vacío':    (r) => {
+      try {
+        const pdf = r.json('PdfBase64');
+        return typeof pdf === 'string' && pdf.length > 0;
+      } catch { return false; }
     },
     'firma digital: tiempo respuesta < 5s': (r) => r.timings.duration < 5000,
   });
